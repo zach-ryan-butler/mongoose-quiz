@@ -35,20 +35,18 @@ describe('app routes', () => {
 
   it('can get all dogs', async() => {
     const dogs = await Dog.create([
-      { name: 'oakley', breed: 'pit bull' }
+      { name: 'oakley', breed: 'pit bull' },
+      { name: 'spot', breed: 'black lab' },
+      { name: 'rover', breed: 'terrier' }
     ]);
-
-    const dogsJSON = JSON.parse(JSON.stringify(dogs));
 
     return request(app)
       .get('/api/v1/dogs')
       .then(res => {
-        expect(res.body).toEqual([{
-          _id: expect.any(String),
-          name: 'oakley',
-          breed: 'pit bull',
-          __v: 0
-        }]);
+        dogs.forEach(dog => {
+          const dogJSON = JSON.parse(JSON.stringify(dog));
+          expect(res.body).toContainEqual(dogJSON);
+        })
       });
   });
 
